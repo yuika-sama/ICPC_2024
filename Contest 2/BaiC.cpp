@@ -26,74 +26,58 @@ using namespace std;
 const int oo = 1e9+7;
 
 //end of template
-bool is_sorted(const vector<int>& P) {
-    for (size_t i = 1; i < P.size(); ++i) {
-        if (P[i] < P[i - 1]) return false;
-    }
-    return true;
+struct state{
+	vector<int> p;
+	int step;
+};
+vi TH1(vi p, int n){
+	vi newp = p;
+	for (int i=0; i<n; i++){
+		swap(newp[2*i], newp[2*i+1]);
+	}
+	return newp;
 }
-
-// Function to apply operation 1
-void apply_operation_1(vector<int>& P) {
-    size_t N = P.size() / 2;
-    for (size_t i = 0; i < 2 * N; i += 2) {
-        swap(P[i], P[i + 1]);
-    }
+vi TH2(vi p, int n){
+	vi newp = p;
+	for (int i=0; i<n; i++){
+		swap(newp[i], newp[i+n]);
+	}
+	return newp;
 }
-
-// Function to apply operation 2
-void apply_operation_2(vector<int>& P) {
-    size_t N = P.size() / 2;
-    for (size_t i = 0; i < N; ++i) {
-        swap(P[i], P[N + i]);
-    }
+int bfs(int n, vector<int> p){
+	queue<state> q;
+	set<vector<int>> vs;
+	q.push({p, 0});
+	vs.ins(p);
+	while (!q.empty()){
+		state cur = q.front(); q.pop();
+		if (is_sorted(al(cur.p))) return cur.step;
+		vector<int> p1 = TH1(cur.p, n);
+		if (vs.find(p1) == vs.end()){
+			q.push({p1, cur.step+1});
+			vs.ins(p1);
+		}
+		vector<int> p2 = TH2(cur.p, n);
+		if (vs.find(p2) == vs.end()){
+			q.push({p2, cur.step+1});
+			vs.ins(p2);
+		}
+	}
+	return -1;
 }
-
-// Function to find the minimum number of operations to sort the array
-int minimum_operations(int N, vector<int>& P) {
-    vector<int> original_P = P;
-    int operations_count = 0;
-
-    // Check by applying operation 1 and 2 alternately starting with operation 1
-    for (int i = 0; i < 2 * N; ++i) {
-        if (is_sorted(P)) return operations_count;
-        if (operations_count % 2 == 0) {
-            apply_operation_1(P);
-        } else {
-            apply_operation_2(P);
-        }
-        operations_count++;
-    }
-
-    // Reset and check by applying operation 1 and 2 alternately starting with operation 2
-    P = original_P;
-    operations_count = 0;
-    for (int i = 0; i < 2 * N; ++i) {
-        if (is_sorted(P)) return operations_count;
-        if (operations_count % 2 == 0) {
-            apply_operation_2(P);
-        } else {
-            apply_operation_1(P);
-        }
-        operations_count++;
-    }
-
-    return -1;
-}
-
 void solve(){
 	/*hav fun with coding*/
 	int n; cin >> n;
-	vector<int> p(n*2);
-	for (int i=0; i<2*n; i++){
-		cin >> p[i];
-	}
-	cout << minimum_operations(n, p);
+	vector<int> p(2*n);
+	for (auto& i:p) cin >> i;
+	int res = bfs(n, p);
+	cout << res;
+
 }
 main(){
 	faster();
 	int T = 1;
-	// cin >> T;	
+	// cin >> T;
 	while (T--){
 		solve();
 		cout << endl;
