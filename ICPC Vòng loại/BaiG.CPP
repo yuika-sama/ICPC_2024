@@ -26,20 +26,17 @@ using namespace std;
 const int oo = 1e9+7;
 
 //end of template
-
-
 void solve(){
-	ll n; cin >> n;
-	vll v;
-	v[0] = 0;
-	map<ll,ll> m;
-	m[0]=1;
-	ll ans=0;
-	for (int i=1; i<=1e6; i++){
-		v[i]=v[i-1]+i;
-		ans+=m[v[i]-n];
-	}	
-	cout<<ans<<endl;
+	/*hav fun with coding*/
+	ll m; cin >> m;
+	int r = 0;
+	ll x  = 2*m;
+	for (int i=1; i<=sqrt(x); i++){
+		if (x%i==0){
+			if ((i+x/i)%2) r+=2;
+		}
+	}
+	cout << r;
 }
 main(){
 	faster();
@@ -47,7 +44,6 @@ main(){
 	// cin >> T;
 	while (T--){
 		solve();
-		cout << endl;
 	}
 	cerr << "Time elapsed: " << (1.0 * clock() / CLOCKS_PER_SEC) << "s.\n";
 	return 0;
